@@ -24,13 +24,13 @@ fn work_increase() -> ! {
     let mut i_handle = std::io::stdin().lock();
     let mut o_handle = std::io::stdout().lock();
 
-    let mut t0 = chrono::offset::Local::now();
+    let mut t0 = std::time::Instant::now();
     loop {
         buf.clear();
         let _ = i_handle.read_until(b'\n', &mut buf);
-        let t1 = chrono::offset::Local::now();
+        let t1 = std::time::Instant::now();
         // TODO: better way to format
-        let _ = o_handle.write_all(format!("{:?} ", (t1 - t0).to_std().unwrap()).as_bytes());
+        let _ = o_handle.write_all(format!("{:?} ", (t1 - t0)).as_bytes());
         let _ = o_handle.write_all(&buf);
         t0 = t1;
     }
