@@ -36,6 +36,23 @@ fn work_increase() -> ! {
     }
 }
 
+fn work_since_start() -> ! {
+    let mut buf: Vec<u8> = vec![];
+
+    let mut i_handle = std::io::stdin().lock();
+    let mut o_handle = std::io::stdout().lock();
+
+    let t0 = std::time::Instant::now();
+    loop {
+        buf.clear();
+        let _ = i_handle.read_until(b'\n', &mut buf);
+        let t1 = std::time::Instant::now();
+        // TODO: better way to format
+        let _ = o_handle.write_all(format!("{:?} ", (t1 - t0)).as_bytes());
+        let _ = o_handle.write_all(&buf);
+    }
+}
+
 fn main() {
     enum TimeMode {
         Default,
@@ -67,6 +84,8 @@ fn main() {
         TimeMode::Increase => {
             work_increase();
         }
-        _ => { panic!("not implemented") }
+        TimeMode::SinceStart => {
+            work_since_start();
+        }
     }
 }
