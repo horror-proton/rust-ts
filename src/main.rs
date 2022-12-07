@@ -1,7 +1,6 @@
 use std::io::{BufRead, Write};
-use chrono;
 
-static DEFAULT_FMT: &str = "%b %d %H:%M:%S ";
+const DEFAULT_FMT: &str = "%b %d %H:%M:%S ";
 
 fn work_default(fmt: &str) -> ! {
     let mut buf: Vec<u8> = vec![];
@@ -13,7 +12,11 @@ fn work_default(fmt: &str) -> ! {
         buf.clear();
         let _ = i_handle.read_until(b'\n', &mut buf);
         let _ = o_handle.write_all(
-            chrono::offset::Local::now().format(fmt).to_string().as_bytes());
+            chrono::offset::Local::now()
+                .format(fmt)
+                .to_string()
+                .as_bytes(),
+        ); // TODO: chrono::format::strftime is slow use libc instead?
         let _ = o_handle.write_all(&buf);
     }
 }
@@ -38,7 +41,6 @@ fn work_increase() -> ! {
 
 fn work_since_start() -> ! {
     let mut buf: Vec<u8> = vec![];
-
     let mut i_handle = std::io::stdin().lock();
     let mut o_handle = std::io::stdout().lock();
 
